@@ -31,6 +31,9 @@ knitr::opts_chunk$set(echo = F,
                       warning = F, 
                       comment = "")
 library(tidyverse)
+library(KMsurv)
+library(survival)
+library(ggfortify)
 theme_set(theme_bw())
 ```
 
@@ -62,12 +65,30 @@ $$
 |    9|    2|    0|    1|                0|                             $\frac{14}{25}$|                          $\frac{47}{90}$|0.593|
 |   10|    1|    0|    1|                0|                             $\frac{14}{25}$|                          $\frac{47}{90}$|0.593|
 
-Problem 3. Tongue data
+## Problem 3. Tongue data
 
-```{r}
+**Figure: KM curve for each tumor type**
 
+```{r, dpi = 300}
+data("tongue")
+tongue = tongue %>% 
+  mutate(type = ifelse(type == 1, "aneuploidy", "diploid"))
+
+# plot
+fit <- survfit(Surv(time, delta) ~ type, data = tongue)
+autoplot(fit)
 ```
 
+**Table: estimated 1-year survival rate and 95% CI**
+
+```{r}
+# prediction
+tmp = summary(fit, time = 365/7)
+output = t(rbind(tmp$lower, tmp$surv, tmp$upper))
+rownames(output) = c("aneuploidy", "diploid")
+colnames(output) = c("lower bond", "estimate", "upper bond")
+output %>% knitr::kable()
+```
 
 ## Code
 ```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}

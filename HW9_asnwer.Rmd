@@ -1,30 +1,74 @@
 ---
-title: "HW9 answer"
+title: "HW9_answer"
 author: "Guojing Wu"
 date: "4/29/2019"
-output: pdf_document
+output:
+    pdf_document:
+    highlight: default
+    number_sections: true
+    citation_package:
+    keep_tex: false
+    fig_caption: true
+    latex_engine: pdflatex
+fontsize: 10pt
+geometry: margin=1in
+bibliography:
+biblio-style:
+header-includes:
+- \usepackage{indentfirst}
+- \usepackage{graphicx}
+- \usepackage{geometry}
+- \usepackage{subfigure}
+- \usepackage{amsmath}
+- \usepackage{listings}
+- \usepackage{tikz}
+- \usetikzlibrary{matrix}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = F, 
+                      message = F, 
+                      warning = F, 
+                      comment = "")
+library(tidyverse)
+theme_set(theme_bw())
 ```
 
-## R Markdown
+## Problem 1. Determine the survival and density function
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Notate survival function as $S(x)$, cumulative hazard function as $H(x)$, cumulative density function as $F(x)$ and probability density function as $f(x)$:
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+$$
+\begin{split}
+h(x) &= \frac{2x}{1+x^2} \\
+H(x) &= \int_{0}^{x}h(t)dt = ln(1+x^2) \\
+S(x) &= exp(-H(x)) = \frac{1}{1+x^2} \\
+F(x) &= 1 - S(x) = 1- \frac{1}{1+x^2} \\
+f(x) &= \frac{d}{dx}F(x) = \frac{2x}{(1+x^2)^2}
+\end{split}
+$$
 
-```{r cars}
-summary(cars)
+## Problem 2. Write out table and calculate estimation of survival function
+
+|$t_i$|$n_i$|$d_i$|$c_i$|$\hat{\lambda_i}$|                                $\hat{S}(t)$|                           $\tilde{H}(t)$| $exp(-\tilde{H}(t))$|
+|----:|----:|----:|----:|----------------:|-------------------------------------------:|----------------------------------------:|--------------------:|
+|    1|   10|    1|    0|   $\frac{1}{10}$|           $1*(1-\frac{1}{10})=\frac{9}{10}$|                           $\frac{1}{10}$|0.905|
+|    2|    9|    2|    0|    $\frac{2}{9}$| $\frac{9}{10}*(1-\frac{2}{9})=\frac{7}{10}$| $\frac{1}{10}+\frac{2}{9}=\frac{29}{90}$|0.725|
+|    4|    7|    0|    1|                0|                              $\frac{7}{10}$|                          $\frac{29}{90}$|0.725|
+|    5|    6|    0|    1|                0|                              $\frac{7}{10}$|                          $\frac{29}{90}$|0.725|
+|    6|    5|    1|    0|    $\frac{1}{5}$|$\frac{7}{10}*(1-\frac{1}{5})=\frac{14}{25}$|$\frac{29}{90}+\frac{1}{5}=\frac{47}{90}$|0.593|
+|    7|    4|    0|    1|                0|                             $\frac{14}{25}$|                          $\frac{47}{90}$|0.593|
+|    8|    3|    0|    1|                0|                             $\frac{14}{25}$|                          $\frac{47}{90}$|0.593|
+|    9|    2|    0|    1|                0|                             $\frac{14}{25}$|                          $\frac{47}{90}$|0.593|
+|   10|    1|    0|    1|                0|                             $\frac{14}{25}$|                          $\frac{47}{90}$|0.593|
+
+Problem 3. Tongue data
+
+```{r}
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+## Code
+```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
